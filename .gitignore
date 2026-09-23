@@ -1,0 +1,38 @@
+# Ambientes
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Flask / DB
+instance/
+*.db
+*.sqlite3
+
+# GCP / credenciais
+*.json
+!package.json
+secrets/
+credentials/
+service-account*.json
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Venv local
+.EUFit/
+
+# Locais / não versionados
+reg/
+deepseek_*.sh
+*.bak
+*.tar.xz
+*.zip

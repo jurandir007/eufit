@@ -1,0 +1,6 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; margin: 0; padding: 0 1rem 2rem; }
+nav a { margin-right: 1rem; }
+.flash { padding: .5rem 1rem; margin: .5rem 0; border-radius: 6px; }
+.flash-success { background: #e6ffed; }
+.flash-danger  { background: #ffe6e6; }
