@@ -1,35 +1,49 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="EUFit — organize seus treinos e acompanhe sua evolução.">
   <title>{% block title %}EUFit{% endblock %}</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏋️</text></svg>">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="{{ url_for('main.index') }}">Home</a>
-      {% if current_user.is_authenticated %}
-        <a href="{{ url_for('dashboard.home') }}">Dashboard</a>
-        <a href="{{ url_for('auth.logout') }}">Sair</a>
-      {% else %}
-        <a href="{{ url_for('auth.login') }}">Entrar</a>
-        <a href="{{ url_for('auth.register') }}">Cadastrar</a>
-      {% endif %}
-    </nav>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{{ url_for('main.index') }}">EUFit</a>
+      <nav class="nav">
+        <a href="{{ url_for('main.index') }}">Home</a>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('dashboard.home') }}">Dashboard</a>
+          <a class="btn btn-ghost" href="{{ url_for('auth.logout') }}">Sair</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}">Entrar</a>
+          <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Cadastrar</a>
+        {% endif %}
+      </nav>
+    </div>
   </header>
 
-  <main>
+  <main class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% for category, msg in messages %}
         <div class="flash flash-{{ category }}">{{ msg }}</div>
       {% endfor %}
     {% endwith %}
 
-    {% if message %}<p>{{ message }}</p>{% endif %}
+    {% if message %}<p class="empty-message">{{ message }}</p>{% endif %}
 
     {% block content %}{% endblock %}
   </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2026 EUFit — feito no Brasil 🇧🇷</small>
+    </div>
+  </footer>
+
 </body>
 </html>
