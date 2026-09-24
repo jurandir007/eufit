@@ -1,11 +1,72 @@
-{% extends "base.html" %}
-{% block title %}Cadastrar{% endblock %}
-{% block content %}
-  <h1>Criar conta</h1>
-  <form method="post">
+{% extends "layouts/auth_split.html" %}
+{% block title %}Criar conta — EUFit{% endblock %}
+
+{% block form_content %}
+<div class="mb-8 text-center">
+    <h2 class="text-2xl font-bold tracking-tight text-white">Criar conta</h2>
+    <p class="text-sm text-slate-400 mt-1">Comece sua jornada no EUFit</p>
+</div>
+
+<form method="POST" class="space-y-5">
     {{ form.hidden_tag() }}
-    <p>{{ form.email.label }}<br>{{ form.email(size=32) }}</p>
-    <p>{{ form.password.label }}<br>{{ form.password(size=32) }}</p>
-    <p>{{ form.submit() }}</p>
-  </form>
+
+    <div>
+        <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">
+            E-mail
+        </label>
+        {{ form.email(
+            class="w-full bg-slate-950/60 border border-slate-800 rounded-lg px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-accentBlue focus:ring-1 focus:ring-accentBlue transition",
+            placeholder="seu@email.com",
+            autocomplete="email"
+        ) }}
+        {% for error in form.email.errors %}
+            <p class="text-xs text-red-400 mt-1">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">
+            Senha
+        </label>
+        {{ form.password(
+            class="w-full bg-slate-950/60 border border-slate-800 rounded-lg px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-accentBlue focus:ring-1 focus:ring-accentBlue transition",
+            placeholder="mínimo 8 caracteres",
+            autocomplete="new-password"
+        ) }}
+        {% for error in form.password.errors %}
+            <p class="text-xs text-red-400 mt-1">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <button type="submit"
+            class="w-full bg-accentBlue hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition duration-200 shadow-lg shadow-blue-500/20">
+        Criar conta
+    </button>
+</form>
+
+<div class="mt-4">
+    <div class="relative flex py-2 items-center">
+        <div class="flex-grow border-t border-slate-800"></div>
+        <span class="flex-shrink mx-4 text-xs text-slate-500 uppercase">ou</span>
+        <div class="flex-grow border-t border-slate-800"></div>
+    </div>
+
+    <a href="{{ url_for('auth.google_login') }}"
+       class="w-full flex items-center justify-center gap-3 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-medium py-3 rounded-lg transition duration-200 shadow-sm">
+        <svg class="w-5 h-5" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.17 21.36 7.22 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.12 0 9.87 0 12s.43 3.88 1.19 5.42l4.09-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.17 2.64 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+        </svg>
+        Cadastrar com Google
+    </a>
+</div>
+
+<p class="mt-6 text-center text-xs text-slate-400">
+    Já tem conta?
+    <a href="{{ url_for('auth.login') }}" class="text-accentBlue font-medium hover:underline">
+        Entrar
+    </a>
+</p>
 {% endblock %}

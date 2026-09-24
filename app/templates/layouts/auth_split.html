@@ -1,0 +1,128 @@
+<!-- ~/EUFit/app/templates/layouts/auth_split.html -->
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EUFit{% endblock %}</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏋️</text></svg>">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg:     '#0f172a',
+                        cardBg:     '#1e293b',
+                        accentBlue: '#3b82f6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-slate-950 font-sans text-slate-100 antialiased">
+
+    <div class="w-full h-screen flex flex-col lg:flex-row overflow-hidden">
+
+        <!-- ─── Lado Esquerdo: card de auth ──────────────────── -->
+        <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 bg-slate-900/50 relative overflow-y-auto">
+
+            <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
+
+            <div class="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 p-8 rounded-2xl shadow-2xl relative z-10">
+                {% block form_content %}{% endblock %}
+            </div>
+        </div>
+
+        <!-- ─── Lado Direito: painel de techs animado ─────────── -->
+        <div class="w-full lg:w-1/2 bg-slate-900 border-l border-slate-800/80 flex flex-col justify-between p-8 lg:p-12">
+
+            <div>
+                <h3 class="text-xl font-semibold text-white text-center lg:text-left mb-1">
+                    Powering EUFit
+                </h3>
+                <p class="text-xs text-slate-400 text-center lg:text-left mb-8">
+                    Tecnologias usadas nesta arquitetura
+                </p>
+
+                <div id="tech-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 min-h-[360px]">
+                    <!-- preenchido via JS -->
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500">
+                <span>EUFit Platform Stack — V1.0</span>
+                <span>2026</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ─── Techs reais do EUFit ────────────────────────────────
+        const TECHS = [
+            { icon: '🐍', name: 'Python',         role: 'Linguagem base' },
+            { icon: '🌶️', name: 'Flask',          role: 'Framework web' },
+            { icon: '🗄️', name: 'SQLAlchemy',     role: 'ORM' },
+            { icon: '💾', name: 'SQLite',         role: 'Banco de dados' },
+            { icon: '🦄', name: 'Gunicorn',       role: 'Servidor WSGI' },
+            { icon: '🌐', name: 'Nginx',          role: 'Reverse proxy' },
+            { icon: '☁️', name: 'Google Cloud',   role: 'Infraestrutura' },
+            { icon: '🔒', name: "Let's Encrypt",  role: 'HTTPS' },
+            { icon: '🌿', name: 'Git',            role: 'Versionamento' },
+            { icon: '🐧', name: 'Debian',         role: 'Sistema operacional' },
+        ];
+
+        const BATCH_SIZE  = 4;      // quantos cards visíveis por vez
+        const INTERVAL_MS = 2500;   // intervalo entre trocas
+
+        const grid = document.getElementById('tech-grid');
+        let cursor = 0;
+
+        function cardHTML(t) {
+            return `
+                <div class="tech-card bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl
+                            flex flex-col justify-between
+                            opacity-0 translate-y-2
+                            transition-all duration-500 ease-out">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">
+                            ${t.icon}
+                        </div>
+                        <span class="text-sm font-semibold text-white">${t.name}</span>
+                    </div>
+                    <p class="text-xs text-slate-400">${t.role}</p>
+                </div>
+            `;
+        }
+
+        function renderBatch() {
+            grid.querySelectorAll('.tech-card').forEach(el => {
+                el.classList.remove('opacity-100', 'translate-y-0');
+                el.classList.add('opacity-0', 'translate-y-2');
+            });
+
+            setTimeout(() => {
+                grid.innerHTML = '';
+                for (let i = 0; i < BATCH_SIZE; i++) {
+                    const t = TECHS[(cursor + i) % TECHS.length];
+                    grid.insertAdjacentHTML('beforeend', cardHTML(t));
+                }
+                requestAnimationFrame(() => {
+                    grid.querySelectorAll('.tech-card').forEach(el => {
+                        el.classList.remove('opacity-0', 'translate-y-2');
+                        el.classList.add('opacity-100', 'translate-y-0');
+                    });
+                });
+                cursor = (cursor + BATCH_SIZE) % TECHS.length;
+            }, 500);
+        }
+
+        renderBatch();
+        setInterval(renderBatch, INTERVAL_MS);
+    </script>
+</body>
+</html>
