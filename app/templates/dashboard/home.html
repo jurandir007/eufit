@@ -1,6 +1,91 @@
-{% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
+<!-- ~/EUFit/app/templates/dashboard/home.html -->
+{% extends "layouts/menu.html" %}
+{% block title %}Menu — EUFit{% endblock %}
+
 {% block content %}
-  <h1>Dashboard</h1>
-  <p>Olá, {{ user.email }} 👋</p>
+
+<div class="mb-10 text-center">
+    <h1 class="text-3xl font-bold tracking-tight text-white">Menu</h1>
+    <p class="text-sm text-slate-400 mt-2">Escolha um app para começar</p>
+</div>
+
+{% set apps = [
+    {'name': 'Scale',              'icon': '⚖️', 'status': 'available'},
+    {'name': 'StopVaping',         'icon': '🚭', 'status': 'available'},
+    {'name': 'EUBank - Simulator', 'icon': '🏦', 'status': 'available'},
+    {'name': 'Shorten URL',        'icon': '🔗', 'status': 'soon'},
+    {'name': 'Sind-ute',           'icon': '🏛️', 'status': 'soon'},
+    {'name': 'OilSaving',          'icon': '⛽', 'status': 'soon'}
+] %}
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+    {% for app in apps %}
+        {% if app.status == 'available' %}
+            <a href="#"
+               class="group bg-slate-900/80 hover:bg-slate-800/80 border border-slate-800 hover:border-accentBlue/60
+                      p-6 rounded-2xl transition-all duration-300
+                      flex flex-col justify-between min-h-[140px]
+                      shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20
+                                flex items-center justify-center text-2xl">
+                        {{ app.icon }}
+                    </div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider
+                                 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20
+                                 px-2 py-1 rounded-full">
+                        Disponível
+                    </span>
+                </div>
+                <span class="text-base font-semibold text-white mt-4 group-hover:text-accentBlue transition-colors">
+                    {{ app.name }}
+                </span>
+            </a>
+        {% else %}
+            <div class="bg-slate-900/40 border border-slate-800/60
+                        p-6 rounded-2xl cursor-not-allowed
+                        flex flex-col justify-between min-h-[140px] opacity-60">
+                <div class="flex items-center justify-between">
+                    <div class="w-11 h-11 rounded-xl bg-slate-800/60 border border-slate-700/50
+                                flex items-center justify-center text-2xl grayscale">
+                        {{ app.icon }}
+                    </div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider
+                                 text-slate-400 bg-slate-800/60 border border-slate-700/50
+                                 px-2 py-1 rounded-full">
+                        Em breve
+                    </span>
+                </div>
+                <span class="text-base font-semibold text-slate-400 mt-4">
+                    {{ app.name }}
+                </span>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {# ─── Card Sair ──────────────────────────────────── #}
+    <a href="{{ url_for('auth.logout') }}"
+       class="group bg-slate-900/80 hover:bg-red-950/40 border border-slate-800 hover:border-red-500/50
+              p-6 rounded-2xl transition-all duration-300
+              flex flex-col justify-between min-h-[140px]
+              shadow-lg hover:shadow-red-500/10 hover:-translate-y-1">
+        <div class="flex items-center justify-between">
+            <div class="w-11 h-11 rounded-xl bg-red-500/10 border border-red-500/20
+                        flex items-center justify-center text-2xl">
+                🚪
+            </div>
+            <span class="text-[10px] font-semibold uppercase tracking-wider
+                         text-red-400 bg-red-500/10 border border-red-500/20
+                         px-2 py-1 rounded-full">
+                Sair
+            </span>
+        </div>
+        <span class="text-base font-semibold text-white mt-4 group-hover:text-red-400 transition-colors">
+            Encerrar sessão
+        </span>
+    </a>
+
+</div>
+
 {% endblock %}

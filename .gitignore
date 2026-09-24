@@ -36,3 +36,5 @@ deepseek_*.sh
 *.bak
 *.tar.xz
 *.zip
+concat_menu.sh
+menu.txt
