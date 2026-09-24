@@ -1,3 +1,4 @@
+#app/routers/auth/models.py
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db, login_manager
@@ -8,7 +9,9 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
-    password_hash = db.Column(db.String(255), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=True)  # Opcional para logins sociais (Google)
+    google_id = db.Column(db.String(120), unique=True, nullable=True, index=True)  # ID único do Google
+    name = db.Column(db.String(100), nullable=True)  # Nome vindo do perfil do Google ou registo
     role = db.Column(db.String(32), default="user", nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
@@ -16,6 +19,8 @@ class User(db.Model, UserMixin):
         self.password_hash = generate_password_hash(raw)
 
     def check_password(self, raw: str) -> bool:
+        if not self.password_hash:
+            return False  # Utilizadores que entram via Google não possuem palavra-passe tradicional
         return check_password_hash(self.password_hash, raw)
 
 
