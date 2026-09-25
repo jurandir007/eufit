@@ -1,6 +1,6 @@
 <!-- ~/EUFit/app/templates/layouts/auth_split.html -->
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +27,7 @@
 
     <div class="w-full h-screen flex flex-col lg:flex-row overflow-hidden">
 
-        <!-- ─── Lado Esquerdo: card de auth ──────────────────── -->
+        <!-- ─── Left: auth card ──────────────────────────────── -->
         <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 bg-slate-900/50 relative overflow-y-auto">
 
             <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <!-- ─── Lado Direito: painel de techs animado ─────────── -->
+        <!-- ─── Right: animated tech panel ───────────────────── -->
         <div class="w-full lg:w-1/2 bg-slate-900 border-l border-slate-800/80 flex flex-col justify-between p-8 lg:p-12">
 
             <div>
@@ -45,11 +45,11 @@
                     Powering EUFit
                 </h3>
                 <p class="text-xs text-slate-400 text-center lg:text-left mb-8">
-                    Tecnologias usadas nesta arquitetura
+                    Technologies powering this architecture
                 </p>
 
                 <div id="tech-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 min-h-[360px]">
-                    <!-- preenchido via JS -->
+                    <!-- filled via JS -->
                 </div>
             </div>
 
@@ -62,22 +62,22 @@
     </div>
 
     <script>
-        // ─── Techs reais do EUFit ────────────────────────────────
+        // ─── Real EUFit techs ────────────────────────────────────
         const TECHS = [
-            { icon: '🐍', name: 'Python',         role: 'Linguagem base' },
-            { icon: '🌶️', name: 'Flask',          role: 'Framework web' },
+            { icon: '🐍', name: 'Python',         role: 'Core language' },
+            { icon: '🌶️', name: 'Flask',          role: 'Web framework' },
             { icon: '🗄️', name: 'SQLAlchemy',     role: 'ORM' },
-            { icon: '💾', name: 'SQLite',         role: 'Banco de dados' },
-            { icon: '🦄', name: 'Gunicorn',       role: 'Servidor WSGI' },
+            { icon: '🐘', name: 'PostgreSQL',     role: 'Database' },
+            { icon: '🦄', name: 'Gunicorn',       role: 'WSGI server' },
             { icon: '🌐', name: 'Nginx',          role: 'Reverse proxy' },
-            { icon: '☁️', name: 'Google Cloud',   role: 'Infraestrutura' },
+            { icon: '☁️', name: 'Google Cloud',   role: 'Infrastructure' },
             { icon: '🔒', name: "Let's Encrypt",  role: 'HTTPS' },
-            { icon: '🌿', name: 'Git',            role: 'Versionamento' },
-            { icon: '🐧', name: 'Debian',         role: 'Sistema operacional' },
+            { icon: '🌿', name: 'Git',            role: 'Version control' },
+            { icon: '🐧', name: 'Debian',         role: 'Operating system' },
         ];
 
-        const BATCH_SIZE  = 4;      // quantos cards visíveis por vez
-        const INTERVAL_MS = 2500;   // intervalo entre trocas
+        const BATCH_SIZE  = 4;
+        const INTERVAL_MS = 2500;
 
         const grid = document.getElementById('tech-grid');
         let cursor = 0;
