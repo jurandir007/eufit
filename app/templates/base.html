@@ -20,8 +20,7 @@
           <a href="{{ url_for('dashboard.home') }}">Dashboard</a>
           <a class="btn btn-ghost" href="{{ url_for('auth.logout') }}">Sair</a>
         {% else %}
-          <a href="{{ url_for('auth.login') }}">Entrar</a>
-          <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Cadastrar</a>
+<a href="{{ url_for('auth.login') }}">Entrar</a>
         {% endif %}
       </nav>
     </div>
