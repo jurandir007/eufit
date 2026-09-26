@@ -1,7 +1,7 @@
 # EUFit/app/__init__.py
 from flask import Flask
 from config import Config
-from app.extensions import db, login_manager, migrate, oauth
+from app.extensions import db, login_manager, migrate, oauth, csrf
 import os
 
 
@@ -9,11 +9,13 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+
     # Extensões
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
     oauth.init_app(app)
+    csrf.init_app(app)
 
     # Registo do cliente OAuth do Google
     oauth.register(
