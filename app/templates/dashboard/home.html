@@ -10,9 +10,9 @@
 </div>
 
 {% set apps = [
-    {'name': 'Scale',              'icon': '⚖️', 'status': 'available'},
-    {'name': 'StopVaping',         'icon': '🚭', 'status': 'available'},
-    {'name': 'EUBank - Simulator', 'icon': '🏦', 'status': 'available'},
+    {'name': 'Scale',              'icon': '⚖️', 'status': 'soon'},
+    {'name': 'StopVaping',         'icon': '🚭', 'status': 'available', 'url': url_for('vaping.home')},
+    {'name': 'EUBank - Simulator', 'icon': '🏦', 'status': 'soon'},
     {'name': 'Shorten URL',        'icon': '🔗', 'status': 'soon'},
     {'name': 'Sind-ute',           'icon': '🏛️', 'status': 'soon'},
     {'name': 'OilSaving',          'icon': '⛽', 'status': 'soon'}
@@ -22,7 +22,7 @@
 
     {% for app in apps %}
         {% if app.status == 'available' %}
-            <a href="#"
+            <a href="{{ app.url if app.url is defined else '#' }}"
                class="group bg-slate-900/80 hover:bg-slate-800/80 border border-slate-800 hover:border-accentBlue/60
                       p-6 rounded-2xl transition-all duration-300
                       flex flex-col justify-between min-h-[140px]
