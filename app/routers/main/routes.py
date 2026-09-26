@@ -6,9 +6,6 @@ from app.routers.main import main_bp
 
 @main_bp.route("/")
 def index():
-    """Raiz do site: manda pro login (se deslogado) ou dashboard (se logado)."""
-    if current_user.is_authenticated:
-        return redirect(url_for("dashboard.home"))
     return redirect(url_for("auth.login"))
 
 
