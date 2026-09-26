@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required, current_user
 
 from app.routers.vaping import vaping_bp
-from app.routers.vaping.forms import LogForm
+from app.routers.vaping.forms import LogForm, EditForm
 from app.routers.vaping import services
 
 
@@ -49,14 +49,18 @@ def edit(record_id):
         flash("Record not found.", "error")
         return redirect(url_for("vaping.history"))
 
-    form = LogForm(obj=record)
+    form = EditForm(obj=record)
     if form.validate_on_submit():
-        services.update_vape_record(record_id, current_user.id, form.puff_count.data)
+        services.update_vape_record(
+            record_id,
+            current_user.id,
+            form.puff_count.data,
+            form.recorded_at.data,
+        )
         flash("Record updated.", "success")
         return redirect(url_for("vaping.history"))
 
     return render_template("vaping/edit.html", user=current_user, record=record, form=form)
-
 
 @vaping_bp.route("/delete/<int:record_id>", methods=["POST"])
 @login_required

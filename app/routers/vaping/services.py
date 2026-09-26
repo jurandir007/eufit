@@ -18,13 +18,13 @@ def create_vape_record(user_id, puff_count):
         raise
 
 
-def update_vape_record(record_id, user_id, puff_count):
-    """Atualiza o puff_count de um registo (só do próprio user)."""
+def update_vape_record(record_id, user_id, puff_count, recorded_at):
     try:
         record = RecordVape.query.filter_by(id=record_id, user_id=user_id).first()
         if not record:
             return False
         record.puff_count = puff_count
+        record.recorded_at = recorded_at
         db.session.commit()
         return True
     except Exception:

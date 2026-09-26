@@ -1,0 +1,94 @@
+<!-- ~/EUFit/app/templates/vaping/home.html -->
+{% extends "layouts/menu.html" %}
+
+{% block title %}StopVaping{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="flex items-center justify-between mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-white">🚭 StopVaping</h1>
+        <p class="text-sm text-slate-400 mt-1">Track your daily puffs</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <span class="text-sm text-slate-300">{{ user.name }}</span>
+        <a href="{{ url_for('auth.logout') }}"
+           class="text-xs text-red-400 hover:text-red-300 border border-red-500/30 hover:border-red-500/60
+                  px-3 py-1.5 rounded-full transition-colors">
+            Sign out
+        </a>
+    </div>
+</div>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-4 px-4 py-3 rounded-lg text-sm
+                  {% if category == 'error' %}bg-red-500/10 border border-red-500/30 text-red-300
+                  {% else %}bg-emerald-500/10 border border-emerald-500/30 text-emerald-300{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- Form de inserção -->
+<div class="bg-cardBg border border-slate-800 rounded-2xl p-6 mb-6">
+    <h2 class="text-lg font-semibold text-white mb-4">📝 New Record</h2>
+    <form method="POST" action="{{ url_for('vaping.log') }}" class="flex flex-wrap gap-3 items-center">
+        {{ form.hidden_tag() }}
+        {{ form.puff_count(
+            class="flex-1 min-w-[200px] bg-slate-900 border border-slate-700 focus:border-accentBlue
+                   rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition-colors",
+            placeholder="How many puffs?",
+            min="0", max="5000"
+        ) }}
+        {{ form.submit(
+            class="bg-accentBlue hover:bg-blue-600 text-white font-semibold
+                   px-6 py-3 rounded-lg transition-colors cursor-pointer"
+        ) }}
+    </form>
+</div>
+
+<!-- Média móvel -->
+<div class="bg-cardBg border border-slate-800 rounded-2xl p-8 mb-6 text-center">
+    <h2 class="text-sm uppercase tracking-wider text-slate-400 mb-2">📊 Daily Average</h2>
+    <div class="text-5xl font-bold text-accentBlue mb-2">{{ "%.1f"|format(avg) }}</div>
+    <p class="text-sm text-slate-400">puffs / day (last 15 days)</p>
+</div>
+
+<!-- Últimos 5 registos -->
+<div class="bg-cardBg border border-slate-800 rounded-2xl p-6 mb-6">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-white">📋 Recent Records</h2>
+        <a href="{{ url_for('vaping.history') }}"
+           class="text-sm text-accentBlue hover:text-blue-400 transition-colors">
+            View all →
+        </a>
+    </div>
+
+    {% if history %}
+    <div class="divide-y divide-slate-800">
+        {% for record in history %}
+        <div class="flex items-center justify-between py-3">
+            <span class="text-sm text-slate-400">{{ record.recorded_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            <span class="text-base font-semibold text-slate-100">{{ record.puff_count }} puffs</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-slate-500 text-sm text-center py-6">No records yet.</p>
+    {% endif %}
+</div>
+
+<!-- Botão voltar -->
+<div class="text-center">
+    <a href="{{ url_for('dashboard.home') }}"
+       class="inline-block text-sm text-slate-400 hover:text-slate-200 transition-colors">
+        ← Back to Menu
+    </a>
+</div>
+
+{% endblock %}

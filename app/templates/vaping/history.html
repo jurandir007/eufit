@@ -1,0 +1,94 @@
+<!-- ~/EUFit/app/templates/vaping/history.html -->
+{% extends "layouts/menu.html" %}
+
+{% block title %}StopVaping — History{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="flex items-center justify-between mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-white">📋 History</h1>
+        <p class="text-sm text-slate-400 mt-1">All your vape records</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <span class="text-sm text-slate-300">{{ user.name }}</span>
+        <a href="{{ url_for('auth.logout') }}"
+           class="text-xs text-red-400 hover:text-red-300 border border-red-500/30 hover:border-red-500/60
+                  px-3 py-1.5 rounded-full transition-colors">
+            Sign out
+        </a>
+    </div>
+</div>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-4 px-4 py-3 rounded-lg text-sm
+                  {% if category == 'error' %}bg-red-500/10 border border-red-500/30 text-red-300
+                  {% else %}bg-emerald-500/10 border border-emerald-500/30 text-emerald-300{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- Tabela -->
+<div class="bg-cardBg border border-slate-800 rounded-2xl overflow-hidden">
+    {% if history %}
+    <table class="w-full">
+        <thead class="bg-slate-900/50 border-b border-slate-800">
+            <tr>
+                <th class="text-left text-xs uppercase tracking-wider text-slate-400 font-semibold px-6 py-4">Date</th>
+                <th class="text-right text-xs uppercase tracking-wider text-slate-400 font-semibold px-6 py-4">Puffs</th>
+                <th class="text-right text-xs uppercase tracking-wider text-slate-400 font-semibold px-6 py-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800">
+            {% for record in history %}
+            <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="px-6 py-4 text-sm text-slate-300">{{ record.recorded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td class="px-6 py-4 text-right text-base font-semibold text-slate-100">{{ record.puff_count }}</td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <a href="{{ url_for('vaping.edit', record_id=record.id) }}"
+                           class="text-xs bg-slate-800 hover:bg-accentBlue text-slate-200 hover:text-white
+                                  px-3 py-1.5 rounded-md transition-colors">
+                            Edit
+                        </a>
+                        <form method="POST" action="{{ url_for('vaping.delete', record_id=record.id) }}"
+                              class="inline" onsubmit="return confirm('Delete this record?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit"
+                                    class="text-xs bg-slate-800 hover:bg-red-600 text-slate-200 hover:text-white
+                                           px-3 py-1.5 rounded-md transition-colors cursor-pointer">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="text-center py-16">
+        <p class="text-slate-500 mb-4">No records yet.</p>
+        <a href="{{ url_for('vaping.home') }}"
+           class="text-sm text-accentBlue hover:text-blue-400 transition-colors">
+            Add your first record →
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Botão voltar -->
+<div class="text-center mt-6">
+    <a href="{{ url_for('vaping.home') }}"
+       class="inline-block text-sm text-slate-400 hover:text-slate-200 transition-colors">
+        ← Back to Dashboard
+    </a>
+</div>
+
+{% endblock %}
