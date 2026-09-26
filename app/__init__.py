@@ -28,10 +28,12 @@ def create_app(config_class=Config):
     from app.routers.main import main_bp
     from app.routers.auth import auth_bp
     from app.routers.dashboard import dashboard_bp
+    from app.routers.vaping import vaping_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(vaping_bp)
 
     # Handlers de erro
     from app.core import errors
