@@ -25,20 +25,20 @@
 </head>
 <body class="h-full bg-slate-950 font-sans text-slate-100 antialiased">
 
-    <div class="w-full h-screen flex flex-col lg:flex-row overflow-hidden">
+    <div class="w-full min-h-screen flex flex-col lg:flex-row overflow-hidden">
 
         <!-- ─── Left: auth card ──────────────────────────────── -->
-        <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 bg-slate-900/50 relative overflow-y-auto">
+        <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-8 bg-slate-900/50 relative overflow-y-auto">
 
             <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
 
-            <div class="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 p-8 rounded-2xl shadow-2xl relative z-10">
+            <div class="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl relative z-10">
                 {% block form_content %}{% endblock %}
             </div>
         </div>
 
-        <!-- ─── Right: animated tech panel ───────────────────── -->
-        <div class="w-full lg:w-1/2 bg-slate-900 border-l border-slate-800/80 flex flex-col justify-between p-8 lg:p-12">
+        <!-- ─── Right: tech panel ────────────────────────────── -->
+        <div class="w-full lg:w-1/2 bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800/80 flex flex-col justify-between p-6 sm:p-8 lg:p-12">
 
             <div>
                 <h3 class="text-xl font-semibold text-white text-center lg:text-left mb-1">
@@ -48,8 +48,86 @@
                     Technologies powering this architecture
                 </p>
 
-                <div id="tech-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 min-h-[360px]">
-                    <!-- filled via JS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🐍</div>
+                            <span class="text-sm font-semibold text-white">Python</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Core language</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🌶️</div>
+                            <span class="text-sm font-semibold text-white">Flask</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Web framework</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🗄️</div>
+                            <span class="text-sm font-semibold text-white">SQLAlchemy</span>
+                        </div>
+                        <p class="text-xs text-slate-400">ORM</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🐘</div>
+                            <span class="text-sm font-semibold text-white">PostgreSQL</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Database</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🦄</div>
+                            <span class="text-sm font-semibold text-white">Gunicorn</span>
+                        </div>
+                        <p class="text-xs text-slate-400">WSGI server</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🌐</div>
+                            <span class="text-sm font-semibold text-white">Nginx</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Reverse proxy</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">☁️</div>
+                            <span class="text-sm font-semibold text-white">Google Cloud</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Infrastructure</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🔒</div>
+                            <span class="text-sm font-semibold text-white">Let's Encrypt</span>
+                        </div>
+                        <p class="text-xs text-slate-400">HTTPS</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🌿</div>
+                            <span class="text-sm font-semibold text-white">Git</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Version control</p>
+                    </div>
+
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">🐧</div>
+                            <span class="text-sm font-semibold text-white">Debian</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Operating system</p>
+                    </div>
                 </div>
             </div>
 
@@ -61,68 +139,5 @@
 
     </div>
 
-    <script>
-        // ─── Real EUFit techs ────────────────────────────────────
-        const TECHS = [
-            { icon: '🐍', name: 'Python',         role: 'Core language' },
-            { icon: '🌶️', name: 'Flask',          role: 'Web framework' },
-            { icon: '🗄️', name: 'SQLAlchemy',     role: 'ORM' },
-            { icon: '🐘', name: 'PostgreSQL',     role: 'Database' },
-            { icon: '🦄', name: 'Gunicorn',       role: 'WSGI server' },
-            { icon: '🌐', name: 'Nginx',          role: 'Reverse proxy' },
-            { icon: '☁️', name: 'Google Cloud',   role: 'Infrastructure' },
-            { icon: '🔒', name: "Let's Encrypt",  role: 'HTTPS' },
-            { icon: '🌿', name: 'Git',            role: 'Version control' },
-            { icon: '🐧', name: 'Debian',         role: 'Operating system' },
-        ];
-
-        const BATCH_SIZE  = 4;
-        const INTERVAL_MS = 2500;
-
-        const grid = document.getElementById('tech-grid');
-        let cursor = 0;
-
-        function cardHTML(t) {
-            return `
-                <div class="tech-card bg-slate-950/50 border border-slate-800/80 p-4 rounded-xl
-                            flex flex-col justify-between
-                            opacity-0 translate-y-2
-                            transition-all duration-500 ease-out">
-                    <div class="flex items-center space-x-3 mb-2">
-                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-lg">
-                            ${t.icon}
-                        </div>
-                        <span class="text-sm font-semibold text-white">${t.name}</span>
-                    </div>
-                    <p class="text-xs text-slate-400">${t.role}</p>
-                </div>
-            `;
-        }
-
-        function renderBatch() {
-            grid.querySelectorAll('.tech-card').forEach(el => {
-                el.classList.remove('opacity-100', 'translate-y-0');
-                el.classList.add('opacity-0', 'translate-y-2');
-            });
-
-            setTimeout(() => {
-                grid.innerHTML = '';
-                for (let i = 0; i < BATCH_SIZE; i++) {
-                    const t = TECHS[(cursor + i) % TECHS.length];
-                    grid.insertAdjacentHTML('beforeend', cardHTML(t));
-                }
-                requestAnimationFrame(() => {
-                    grid.querySelectorAll('.tech-card').forEach(el => {
-                        el.classList.remove('opacity-0', 'translate-y-2');
-                        el.classList.add('opacity-100', 'translate-y-0');
-                    });
-                });
-                cursor = (cursor + BATCH_SIZE) % TECHS.length;
-            }, 500);
-        }
-
-        renderBatch();
-        setInterval(renderBatch, INTERVAL_MS);
-    </script>
 </body>
 </html>
