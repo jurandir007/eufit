@@ -97,3 +97,7 @@ def get_daily_avg(user_id, days=WINDOW_DAYS):
         divisor = days
 
     return total / divisor if divisor > 0 else 0
+    
+def get_record(record_id, user_id):
+    """Vai buscar 1 registo específico (só do próprio user)."""
+    return RecordVape.query.filter_by(id=record_id, user_id=user_id).first()
