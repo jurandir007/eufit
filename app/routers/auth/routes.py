@@ -1,6 +1,6 @@
 # EUFit/app/routers/auth/routes.py
 from flask import render_template, redirect, url_for, flash
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
 from app.extensions import oauth, db
 from app.routers.auth.models import User
 from app.routers.auth import auth_bp
@@ -8,6 +8,8 @@ from app.routers.auth import auth_bp
 
 @auth_bp.route("/login", methods=["GET"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard.home"))
     return render_template("auth/login.html")
 
 

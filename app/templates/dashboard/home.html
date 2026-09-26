@@ -6,7 +6,7 @@
 
 <div class="mb-10 text-center">
     <h1 class="text-3xl font-bold tracking-tight text-white">Menu</h1>
-    <p class="text-sm text-slate-400 mt-2">Escolha um app para começar</p>
+    <p class="text-sm text-slate-400 mt-2">Choose an app to get started</p>
 </div>
 
 {% set apps = [
@@ -35,7 +35,7 @@
                     <span class="text-[10px] font-semibold uppercase tracking-wider
                                  text-emerald-400 bg-emerald-500/10 border border-emerald-500/20
                                  px-2 py-1 rounded-full">
-                        Disponível
+                        Available
                     </span>
                 </div>
                 <span class="text-base font-semibold text-white mt-4 group-hover:text-accentBlue transition-colors">
@@ -54,7 +54,7 @@
                     <span class="text-[10px] font-semibold uppercase tracking-wider
                                  text-slate-400 bg-slate-800/60 border border-slate-700/50
                                  px-2 py-1 rounded-full">
-                        Em breve
+                        Coming soon
                     </span>
                 </div>
                 <span class="text-base font-semibold text-slate-400 mt-4">
@@ -64,7 +64,8 @@
         {% endif %}
     {% endfor %}
 
-    {# ─── Card Sair ──────────────────────────────────── #}
+    {% if current_user.is_authenticated %}
+    {# ─── Card Sign out (logged in) ──────────────────── #}
     <a href="{{ url_for('auth.logout') }}"
        class="group bg-slate-900/80 hover:bg-red-950/40 border border-slate-800 hover:border-red-500/50
               p-6 rounded-2xl transition-all duration-300
@@ -78,13 +79,36 @@
             <span class="text-[10px] font-semibold uppercase tracking-wider
                          text-red-400 bg-red-500/10 border border-red-500/20
                          px-2 py-1 rounded-full">
-                Sair
+                Sign out
             </span>
         </div>
         <span class="text-base font-semibold text-white mt-4 group-hover:text-red-400 transition-colors">
-            Encerrar sessão
+            Sign out
         </span>
     </a>
+ {% else %}
+    {# ─── Card Login (guest) ─────────────────────────── #}
+    <a href="{{ url_for('auth.google_login') }}"
+       class="group bg-slate-900/80 hover:bg-blue-950/40 border border-slate-800 hover:border-accentBlue/60
+              p-6 rounded-2xl transition-all duration-300
+              flex flex-col justify-between min-h-[140px]
+              shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1">
+        <div class="flex items-center justify-between">
+            <div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20
+                        flex items-center justify-center text-2xl">
+                🔐
+            </div>
+            <span class="text-[10px] font-semibold uppercase tracking-wider
+                         text-blue-400 bg-blue-500/10 border border-blue-500/20
+                         px-2 py-1 rounded-full">
+                Sign in
+            </span>
+        </div>
+        <span class="text-base font-semibold text-white mt-4 group-hover:text-accentBlue transition-colors">
+            Login
+        </span>
+    </a>
+    {% endif %}
 
 </div>
 
