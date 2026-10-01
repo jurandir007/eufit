@@ -13,9 +13,9 @@
     {'name': 'Scale',              'icon': '⚖️', 'status': 'soon'},
     {'name': 'StopVaping',         'icon': '🚭', 'status': 'available', 'url': url_for('vaping.home')},
     {'name': 'EUBank - Simulator', 'icon': '🏦', 'status': 'soon'},
-    {'name': 'Shorten URL',        'icon': '🔗', 'status': 'soon'},
-    {'name': 'Sind-ute',           'icon': '🏛️', 'status': 'soon'},
-    {'name': 'OilSaving',          'icon': '⛽', 'status': 'soon'}
+    {'name': 'Shorten URL',        'icon': '🔗', 'status': 'planning'},
+    {'name': 'Sind-ute',           'icon': '🏛️', 'status': 'planning'},
+    {'name': 'OilSaving',          'icon': '⛽', 'status': 'planning'}
 ] %}
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -54,7 +54,7 @@
                     <span class="text-[10px] font-semibold uppercase tracking-wider
                                  text-slate-400 bg-slate-800/60 border border-slate-700/50
                                  px-2 py-1 rounded-full">
-                        Coming soon
+                        {{ 'Planning' if app.status == 'planning' else 'Coming soon' }}
                     </span>
                 </div>
                 <span class="text-base font-semibold text-slate-400 mt-4">
