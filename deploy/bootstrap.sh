@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-PROJECT_DIR="${HOME}/EUFit"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${PROJECT_DIR}"
 
 echo "▶️  Instalando pacotes base (Python, venv, pip, git)"
