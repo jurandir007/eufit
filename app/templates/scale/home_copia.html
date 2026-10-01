@@ -1,0 +1,115 @@
+<!-- ~/EUFit/app/templates/scale/home.html -->
+{% extends "base.html" %}
+{% block title %}Scale — EUFit{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-8">
+
+  {# ── Header ── #}
+  <div class="flex items-center gap-3">
+    <a href="{{ url_for('dashboard.home') }}"
+       class="text-slate-400 hover:text-white transition-colors text-sm">← Menu</a>
+    <span class="text-slate-700">/</span>
+    <h1 class="text-2xl font-bold text-white">⚖️ Scale</h1>
+  </div>
+
+
+  {# ── Latest reading card ── #}
+  {% if latest %}
+  <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+    <p class="text-xs text-slate-500 uppercase tracking-widest mb-4">Last measurement
+      — {{ latest.carimbo.strftime('%d %b %Y, %H:%M') }}</p>
+    <div class="grid grid-cols-3 gap-4 text-center">
+      <div>
+        <p class="text-3xl font-bold text-white">{{ "%.1f"|format(latest.peso) }}</p>
+        <p class="text-xs text-slate-400 mt-1">kg · Weight</p>
+      </div>
+      <div>
+        <p class="text-3xl font-bold text-amber-400">{{ "%.1f"|format(latest.gordura) }}<span class="text-lg">%</span></p>
+        <p class="text-xs text-slate-400 mt-1">Fat</p>
+      </div>
+      <div>
+        <p class="text-3xl font-bold text-emerald-400">{{ "%.1f"|format(latest.musculo) if latest.musculo else '—' }}{% if latest.musculo %}<span class="text-lg">%</span>{% endif %}</p>
+        <p class="text-xs text-slate-400 mt-1">Muscle</p>
+      </div>
+    </div>
+    {% if latest.viceral or latest.basal or latest.idade %}
+    <div class="grid grid-cols-3 gap-4 text-center mt-4 pt-4 border-t border-slate-800">
+      <div>
+        <p class="text-xl font-semibold text-slate-200">{{ "%.0f"|format(latest.viceral) if latest.viceral else '—' }}</p>
+        <p class="text-xs text-slate-500 mt-1">Visceral</p>
+      </div>
+      <div>
+        <p class="text-xl font-semibold text-slate-200">{{ "%.0f"|format(latest.basal) if latest.basal else '—' }}</p>
+        <p class="text-xs text-slate-500 mt-1">Basal (kcal)</p>
+      </div>
+      <div>
+        <p class="text-xl font-semibold text-slate-200">{{ "%.0f"|format(latest.idade) if latest.idade else '—' }}</p>
+        <p class="text-xs text-slate-500 mt-1">Metabolic age</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# ── Log form ── #}
+  <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+    <h2 class="text-base font-semibold text-white mb-5">Add measurement</h2>
+    <form method="POST" action="{{ url_for('scale.log') }}" novalidate>
+      {{ form.hidden_tag() }}
+
+      {# Required fields #}
+      <div class="grid grid-cols-3 gap-4 mb-4">
+        {% for field, label in [(form.peso, 'Weight (kg)'), (form.gordura, 'Fat (%)'), (form.viceral, 'Visceral')] %}
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">{{ label }} <span class="text-red-500">*</span></label>
+          {{ field(class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm
+                         focus:outline-none focus:border-accentBlue",
+                   placeholder="0.0", step="0.1") }}
+        </div>
+        {% endfor %}
+      </div>
+
+      {# Optional fields #}
+      <p class="text-xs text-slate-500 mb-3">Optional — filled by AI if your history allows it</p>
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        {% for field, label in [(form.musculo, 'Muscle (%)'), (form.basal, 'Basal (kcal)'), (form.idade, 'Met. age')] %}
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">{{ label }}</label>
+          {{ field(class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm
+                         focus:outline-none focus:border-accentBlue opacity-70",
+                   placeholder="—", step="0.1") }}
+        </div>
+        {% endfor %}
+      </div>
+
+      {{ form.submit(class="w-full bg-accentBlue hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg transition-colors") }}
+    </form>
+  </div>
+
+  {# ── Recent history mini-list ── #}
+  {% if history %}
+  <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-white">Recent</h2>
+      <a href="{{ url_for('scale.history') }}" class="text-xs text-accentBlue hover:underline">See all →</a>
+    </div>
+    <div class="space-y-2">
+      {% for r in history %}
+      <div class="flex items-center justify-between text-sm py-2 border-b border-slate-800 last:border-0">
+        <span class="text-slate-400">{{ r.carimbo.strftime('%d %b %Y') }}</span>
+        <div class="flex gap-4">
+          <span class="text-white font-medium">{{ "%.1f"|format(r.peso) }} kg</span>
+          <span class="text-amber-400">{{ "%.1f"|format(r.gordura) }}% fat</span>
+          {% if r.musculo %}
+          <span class="text-emerald-400">{{ "%.1f"|format(r.musculo) }}% muscle</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

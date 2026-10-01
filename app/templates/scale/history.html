@@ -1,138 +1,125 @@
-<!-- ~/EUFit/app/templates/scale/history.html -->
-{% extends "base.html" %}
-{% block title %}Scale History — EUFit{% endblock %}
+{% extends "layouts/menu.html" %}
+
+{% block title %}Scale — EUFit{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto space-y-6">
-
-  {# ── Header ── #}
-  <div class="flex items-center gap-3">
-    <a href="{{ url_for('scale.home') }}"
-       class="text-slate-400 hover:text-white transition-colors text-sm">← Scale</a>
-    <span class="text-slate-700">/</span>
-    <h1 class="text-2xl font-bold text-white">History</h1>
-    <span class="ml-auto text-sm text-slate-500">{{ history|length }} record{{ 's' if history|length != 1 }}</span>
-  </div>
-
-  {# ── Flash messages ── #}
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for cat, msg in messages %}
-      <div class="px-4 py-3 rounded-lg text-sm font-medium
-                  {{ 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' if cat == 'success'
-                     else 'bg-red-500/10 border border-red-500/20 text-red-400' }}">
-        {{ msg }}
-      </div>
-    {% endfor %}
-  {% endwith %}
-
-  {# ── Chart ── #}
-  <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
-    <div class="flex gap-2 mb-4 flex-wrap">
-      {% for label, val in [('30d', 30), ('90d', 90), ('1y', 365), ('All', 9999)] %}
-      <button onclick="loadChart({{ val }})"
-              class="period-btn px-3 py-1 text-xs rounded-full border border-slate-700 text-slate-400
-                     hover:border-accentBlue hover:text-accentBlue transition-colors"
-              data-days="{{ val }}">
-        {{ label }}
-      </button>
-      {% endfor %}
+<!-- Header -->
+<div class="flex items-center justify-between mb-8">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('dashboard.home') }}"
+           title="Back to Menu"
+           class="text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-accentBlue/60 px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-sm">
+            ← Menu
+        </a>
+        <div>
+            <h1 class="text-3xl font-bold text-white">⚖️ Scale</h1>
+            <p class="text-sm text-slate-400 mt-0.5">Track your body composition</p>
+        </div>
     </div>
-    <canvas id="scaleChart" class="w-full" style="height:260px"></canvas>
-  </div>
-
-  {# ── Table ── #}
-  {% if history %}
-  <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden">
-    <table class="w-full text-sm">
-      <thead>
-        <tr class="border-b border-slate-800 text-left text-xs text-slate-500 uppercase tracking-widest">
-          <th class="px-4 py-3">Date</th>
-          <th class="px-4 py-3 text-right">Weight</th>
-          <th class="px-4 py-3 text-right">Fat</th>
-          <th class="px-4 py-3 text-right">Muscle</th>
-          <th class="px-4 py-3 text-right">Visceral</th>
-          <th class="px-4 py-3 text-right">Basal</th>
-          <th class="px-4 py-3 text-right">Met. age</th>
-          <th class="px-4 py-3"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for r in history %}
-        <tr class="border-b border-slate-800/50 last:border-0 hover:bg-slate-800/30 transition-colors">
-          <td class="px-4 py-3 text-slate-300">{{ r.carimbo.strftime('%d %b %Y') }}</td>
-          <td class="px-4 py-3 text-right font-semibold text-white">{{ "%.1f"|format(r.peso) }} kg</td>
-          <td class="px-4 py-3 text-right text-amber-400">{{ "%.1f"|format(r.gordura) }}%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">{{ "%.1f"|format(r.musculo) if r.musculo else '—' }}</td>
-          <td class="px-4 py-3 text-right text-slate-300">{{ "%.0f"|format(r.viceral) if r.viceral else '—' }}</td>
-          <td class="px-4 py-3 text-right text-slate-300">{{ "%.0f"|format(r.basal) if r.basal else '—' }}</td>
-          <td class="px-4 py-3 text-right text-slate-300">{{ "%.0f"|format(r.idade) if r.idade else '—' }}</td>
-          <td class="px-4 py-3 text-right">
-            <div class="flex gap-2 justify-end">
-              <a href="{{ url_for('scale.edit', record_id=r.id) }}"
-                 class="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500
-                        px-2 py-1 rounded transition-colors">Edit</a>
-              <form method="POST" action="{{ url_for('scale.delete', record_id=r.id) }}"
-                    onsubmit="return confirm('Delete this record?')">
-                {{ csrf_token() if csrf_token is defined else '' }}
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit"
-                        class="text-xs text-red-400 hover:text-red-300 border border-red-500/30
-                               hover:border-red-400/50 px-2 py-1 rounded transition-colors">
-                  Delete
-                </button>
-              </form>
-            </div>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% else %}
-    <p class="text-slate-500 text-center py-12">No measurements yet. Add the first one!</p>
-  {% endif %}
-
+    <div class="flex items-center gap-3">
+        <span class="text-sm text-slate-300">{{ current_user.name }}</span>
+        <a href="{{ url_for('auth.logout') }}"
+           class="text-xs text-red-400 hover:text-red-300 border border-red-500/30 hover:border-red-500/60
+                  px-3 py-1.5 rounded-full transition-colors">
+            Sign out
+        </a>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-let chart = null;
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-4 px-4 py-3 rounded-lg text-sm
+                  {% if category == 'error' %}bg-red-500/10 border border-red-500/30 text-red-300
+                  {% else %}bg-emerald-500/10 border border-emerald-500/30 text-emerald-300{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
-async function loadChart(days) {
-  document.querySelectorAll('.period-btn').forEach(b => {
-    b.classList.toggle('text-accentBlue', b.dataset.days == days);
-    b.classList.toggle('border-accentBlue', b.dataset.days == days);
-    b.classList.toggle('text-slate-400', b.dataset.days != days);
-    b.classList.toggle('border-slate-700', b.dataset.days != days);
-  });
+<!-- Latest reading card -->
+{% if latest %}
+<div class="bg-cardBg border border-slate-800 rounded-2xl p-8 mb-6 text-center">
+    <h2 class="text-sm uppercase tracking-wider text-slate-400 mb-4">📊 Last Measurement ({{ latest.carimbo.strftime('%Y-%m-%d %H:%M') }})</h2>
+    <div class="grid grid-cols-3 gap-4">
+        <div>
+            <div class="text-4xl font-bold text-accentBlue mb-1">{{ "%.1f"|format(latest.peso) }}</div>
+            <p class="text-sm text-slate-400">Weight (kg)</p>
+        </div>
+        <div>
+            <div class="text-4xl font-bold text-amber-400 mb-1">{{ "%.1f"|format(latest.gordura) }}<span class="text-2xl">%</span></div>
+            <p class="text-sm text-slate-400">Fat</p>
+        </div>
+        <div>
+            <div class="text-4xl font-bold text-emerald-400 mb-1">
+                {{ "%.1f"|format(latest.musculo) if latest.musculo else '—' }}{% if latest.musculo %}<span class="text-2xl">%</span>{% endif %}
+            </div>
+            <p class="text-sm text-slate-400">Muscle</p>
+        </div>
+    </div>
+</div>
+{% endif %}
 
-  const res  = await fetch(`{{ url_for('scale.api_chart_data') }}?days=${days}`);
-  const data = await res.json();
+<!-- Form de inserção -->
+<div class="bg-cardBg border border-slate-800 rounded-2xl p-6 mb-6">
+    <h2 class="text-lg font-semibold text-white mb-4">📝 New Measurement</h2>
+    <form method="POST" action="{{ url_for('scale.log') }}" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {% for field, label in [(form.peso, 'Weight (kg) *'), (form.gordura, 'Fat (%) *'), (form.viceral, 'Visceral *')] %}
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2">{{ label }}</label>
+                {{ field(class="w-full bg-slate-900 border border-slate-700 focus:border-accentBlue rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition-colors", placeholder="0.0", step="0.1") }}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <h3 class="text-xs uppercase tracking-wider text-slate-500 mb-3 mt-6">Optional fields</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {% for field, label in [(form.musculo, 'Muscle (%)'), (form.basal, 'Basal (kcal)'), (form.idade, 'Met. Age')] %}
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2">{{ label }}</label>
+                {{ field(class="w-full bg-slate-900 border border-slate-700 focus:border-accentBlue rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition-colors opacity-80", placeholder="—", step="0.1") }}
+            </div>
+            {% endfor %}
+        </div>
 
-  const labels = data.map(d => d.date);
-  const datasets = [
-    { label: 'Weight (kg)',  data: data.map(d => d.peso),    borderColor: '#60a5fa', tension: 0.3, pointRadius: 2 },
-    { label: 'Fat (%)',      data: data.map(d => d.gordura),  borderColor: '#fbbf24', tension: 0.3, pointRadius: 2 },
-    { label: 'Muscle (%)',   data: data.map(d => d.musculo),  borderColor: '#34d399', tension: 0.3, pointRadius: 2 },
-  ].map(ds => ({ ...ds, fill: false }));
+        {{ form.submit(class="w-full bg-accentBlue hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors cursor-pointer") }}
+    </form>
+</div>
 
-  const ctx = document.getElementById('scaleChart').getContext('2d');
-  if (chart) chart.destroy();
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
-      scales: {
-        x: { ticks: { color: '#64748b', maxTicksLimit: 8 }, grid: { color: '#1e293b' } },
-        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } },
-      },
-    },
-  });
-}
+<!-- Últimos registos -->
+<div class="bg-cardBg border border-slate-800 rounded-2xl p-6 mb-6">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-white">📋 Recent Records</h2>
+        <a href="{{ url_for('scale.history') }}" class="text-sm text-accentBlue hover:text-blue-400 transition-colors">
+            View all →
+        </a>
+    </div>
 
-loadChart(90);
-</script>
+    {% if history %}
+    <div class="divide-y divide-slate-800">
+        {% for r in history %}
+        <div class="flex items-center justify-between py-3">
+            <span class="text-sm text-slate-400">{{ r.carimbo.strftime('%Y-%m-%d %H:%M') }}</span>
+            <div class="flex gap-4">
+                <span class="text-base font-semibold text-slate-100">{{ "%.1f"|format(r.peso) }} kg</span>
+                <span class="text-sm font-semibold text-amber-400">{{ "%.1f"|format(r.gordura) }}% fat</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-slate-500 text-sm text-center py-6">No records yet.</p>
+    {% endif %}
+</div>
+
+<!-- Botão voltar -->
+<div class="text-center">
+    <a href="{{ url_for('dashboard.home') }}" class="inline-block text-sm text-slate-400 hover:text-slate-200 transition-colors">
+        ← Back to Menu
+    </a>
+</div>
 {% endblock %}
