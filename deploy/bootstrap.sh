@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # bootstrap.sh — prepara a VM do GCE para rodar o EUFit.
 # Roda UMA vez, dentro da VM, como o usuário jurandir_fisico.
-# Pré-requisito: git clone do repo já feito em ~/eufit
+# Pré-requisito: git clone do repo já feito em ~/EUFit
 
 set -euo pipefail
 
-PROJECT_DIR="${HOME}/eufit"
+PROJECT_DIR="${HOME}/EUFit"
 cd "${PROJECT_DIR}"
 
 echo "▶️  Instalando pacotes base (Python, venv, pip, git)"
@@ -26,7 +26,7 @@ if [ ! -f "${PROJECT_DIR}/.env" ]; then
     echo "⚠️  ${PROJECT_DIR}/.env não existe!"
     echo "    Crie o arquivo antes de continuar. Exemplo:"
     echo "        SECRET_KEY=cole-aqui"
-    echo "        DATABASE_URL=sqlite:////home/jurandir_fisico/eufit/instance/app.db"
+    echo "        DATABASE_URL=sqlite:////home/jurandir_fisico/EUFit/instance/app.db"
     exit 1
 fi
 

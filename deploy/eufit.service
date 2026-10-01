@@ -6,9 +6,9 @@ After=network.target
 Type=simple
 User=jurandir_fisico
 Group=jurandir_fisico
-WorkingDirectory=/home/jurandir_fisico/eufit
-Environment="PATH=/home/jurandir_fisico/eufit/.venv/bin"
-ExecStart=/home/jurandir_fisico/eufit/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 --timeout 60 --access-logfile - --error-logfile - wsgi:app
+WorkingDirectory=/home/jurandir_fisico/EUFit
+Environment="PATH=/home/jurandir_fisico/EUFit/.venv/bin"
+ExecStart=/home/jurandir_fisico/EUFit/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 --timeout 60 --access-logfile - --error-logfile - wsgi:app
 
 Restart=always
 RestartSec=3
