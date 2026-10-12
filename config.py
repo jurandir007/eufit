@@ -7,6 +7,9 @@ load_dotenv()
 class Config:
     SECRET_KEY = os.environ["SECRET_KEY"]
     SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"]
+    SQLALCHEMY_BINDS = {
+        "social": os.environ.get("SOCIAL_DATABASE_URL", os.environ["DATABASE_URL"])
+    }
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
@@ -25,3 +28,6 @@ class ProductionConfig(Config):
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SQLALCHEMY_BINDS = {
+        "social": "sqlite:///:memory:"
+    }

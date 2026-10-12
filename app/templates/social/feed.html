@@ -1,0 +1,252 @@
+{% extends "layouts/menu.html" %}
+
+{% block title %}ConnectHub — Social Media{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('dashboard.home') }}"
+           title="Voltar ao Menu"
+           class="text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-accentBlue/60 px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-sm">
+            ← Menu
+        </a>
+        <div>
+            <div class="flex items-center gap-2">
+                <h1 class="text-3xl font-bold text-white">🌐 ConnectHub</h1>
+                <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    PostgreSQL Neon: Database Social
+                </span>
+            </div>
+            <p class="text-sm text-slate-400 mt-0.5">Projeto Final — Introduction to Data Modelling</p>
+        </div>
+    </div>
+    
+    <div class="flex items-center gap-3">
+        <a href="{{ url_for('social.queries_view') }}"
+           class="text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl transition-all shadow-md shadow-indigo-600/30 flex items-center gap-1.5">
+            📊 Relatório de Consultas SQL (5 Queries)
+        </a>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="bg-cardBg border border-slate-800 rounded-2xl p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Publicações</p>
+            <p class="text-2xl font-bold text-white mt-1">{{ total_posts }}</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-xl">
+            📝
+        </div>
+    </div>
+    <div class="bg-cardBg border border-slate-800 rounded-2xl p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Usuários Ativos</p>
+            <p class="text-2xl font-bold text-white mt-1">{{ total_users }}</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-xl">
+            👥
+        </div>
+    </div>
+    <div class="bg-cardBg border border-slate-800 rounded-2xl p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Curtidas Registradas</p>
+            <p class="text-2xl font-bold text-white mt-1">{{ total_likes }}</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-xl">
+            ❤️
+        </div>
+    </div>
+</div>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-6 px-4 py-3 rounded-lg text-sm
+                  {% if category == 'error' %}bg-red-500/10 border border-red-500/30 text-red-300
+                  {% elif category == 'info' %}bg-blue-500/10 border border-blue-500/30 text-blue-300
+                  {% else %}bg-emerald-500/10 border border-emerald-500/30 text-emerald-300{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Main Feed (2 cols) -->
+    <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Create Post Card -->
+        <div class="bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h2 class="text-base font-semibold text-white mb-3 flex items-center gap-2">
+                <span>✏️</span> Publicar no ConnectHub
+            </h2>
+            <form method="POST" action="{{ url_for('social.new_post') }}" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="flex items-center gap-3">
+                    <label class="text-xs text-slate-400">Postar como:</label>
+                    <select name="user_id" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:border-accentBlue outline-none">
+                        {% for u in users %}
+                            <option value="{{ u.user_id }}">@{{ u.username }} ({{ u.full_name }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <textarea name="content" rows="3" required
+                          placeholder="Compartilhe seus pensamentos, código ou insights com a rede..."
+                          class="w-full bg-slate-900 border border-slate-700 focus:border-accentBlue rounded-xl p-3.5 text-sm text-slate-100 placeholder-slate-500 outline-none transition-colors resize-none"></textarea>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <input type="url" name="image_url" placeholder="URL da imagem (opcional)"
+                           class="w-full sm:w-2/3 bg-slate-900 border border-slate-700 focus:border-accentBlue rounded-lg px-3 py-2 text-xs text-slate-200 placeholder-slate-500 outline-none">
+                    <button type="submit"
+                            class="w-full sm:w-auto bg-accentBlue hover:bg-blue-600 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20">
+                        Publicar Post
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Post Stream -->
+        <div class="space-y-5">
+            {% for post in posts %}
+            <article class="bg-cardBg border border-slate-800 rounded-2xl p-6 space-y-4 hover:border-slate-700 transition-colors">
+                <!-- Author row -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ post.author.profile_pic or 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150' }}"
+                             alt="{{ post.author.username }}"
+                             class="w-10 h-10 rounded-full object-cover border border-slate-700">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold text-white text-sm">{{ post.author.full_name }}</span>
+                                <span class="text-xs text-slate-400">@{{ post.author.username }}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500">{{ post.created_at.strftime('%d/%m/%Y às %H:%M') if post.created_at else '' }}</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">ID #{{ post.post_id }}</span>
+                </div>
+
+                <!-- Content -->
+                <p class="text-sm text-slate-200 leading-relaxed whitespace-pre-line">{{ post.content }}</p>
+
+                {% if post.image_url %}
+                <div class="rounded-xl overflow-hidden border border-slate-800 max-h-96">
+                    <img src="{{ post.image_url }}" alt="Post image" class="w-full h-full object-cover">
+                </div>
+                {% endif %}
+
+                <!-- Action Bar (Likes and Comments counts) -->
+                <div class="flex items-center justify-between border-t border-b border-slate-800/80 py-2.5 text-xs text-slate-400">
+                    <div class="flex items-center gap-4">
+                        <form method="POST" action="{{ url_for('social.toggle_like', post_id=post.post_id) }}" class="inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="user_id" value="1"/>
+                            <button type="submit" class="flex items-center gap-1.5 hover:text-pink-400 transition-colors">
+                                <span>❤️</span>
+                                <span class="font-semibold text-slate-200">{{ post.likes|length }}</span> curtidas
+                            </button>
+                        </form>
+                        <span class="flex items-center gap-1.5">
+                            <span>💬</span>
+                            <span class="font-semibold text-slate-200">{{ post.comments|length }}</span> comentários
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Existing Comments -->
+                {% if post.comments %}
+                <div class="space-y-2.5 pt-1">
+                    {% for c in post.comments %}
+                    <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800/60 text-xs">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-indigo-300">@{{ c.author.username if c.author else 'user' }}</span>
+                            <span class="text-[10px] text-slate-500">{{ c.created_at.strftime('%H:%M - %d/%m') if c.created_at else '' }}</span>
+                        </div>
+                        <p class="text-slate-300">{{ c.content }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Add Comment Input -->
+                <form method="POST" action="{{ url_for('social.new_comment', post_id=post.post_id) }}" class="flex gap-2 pt-2">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="user_id" value="1"/>
+                    <input type="text" name="content" required placeholder="Escreva uma resposta..."
+                           class="flex-1 bg-slate-900 border border-slate-700 focus:border-accentBlue rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 outline-none">
+                    <button type="submit"
+                            class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold transition-colors">
+                        Responder
+                    </button>
+                </form>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Sidebar / Right Panel -->
+    <div class="space-y-6">
+        <!-- School Project Card -->
+        <div class="bg-slate-900/80 border border-indigo-500/30 rounded-2xl p-5 shadow-lg shadow-indigo-500/5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-lg">🎓</span>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Projeto da Faculdade</h3>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Modelagem Relacional de Rede Social (3NF) implementada diretamente no PostgreSQL Neon.
+            </p>
+            <div class="space-y-2 text-xs">
+                <div class="flex justify-between py-1 border-b border-slate-800">
+                    <span class="text-slate-400">Disciplina:</span>
+                    <span class="text-slate-200 font-medium">Intro to Data Modelling</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-800">
+                    <span class="text-slate-400">Entidades:</span>
+                    <span class="text-slate-200 font-medium">Users, Posts, Comments, Likes, Follows</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-800">
+                    <span class="text-slate-400">Normalização:</span>
+                    <span class="text-emerald-400 font-medium">3ª Forma Normal (3NF)</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-800">
+                    <span class="text-slate-400">PostgreSQL Schema:</span>
+                    <span class="text-indigo-400 font-mono">social</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800">
+                <a href="{{ url_for('social.queries_view') }}" class="block text-center text-xs font-semibold bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 hover:bg-indigo-600 hover:text-white py-2 rounded-xl transition-all">
+                    Visualizar Análise & Queries →
+                </a>
+            </div>
+        </div>
+
+        <!-- Community Users -->
+        <div class="bg-cardBg border border-slate-800 rounded-2xl p-5">
+            <h3 class="text-sm font-semibold text-white mb-3">👥 Integrantes Cadastrados</h3>
+            <div class="space-y-3">
+                {% for u in users %}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <img src="{{ u.profile_pic or 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150' }}"
+                             alt="{{ u.username }}" class="w-8 h-8 rounded-full object-cover">
+                        <div>
+                            <p class="text-xs font-semibold text-white">{{ u.full_name }}</p>
+                            <p class="text-[10px] text-slate-400">@{{ u.username }}</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-slate-500 font-mono">ID {{ u.user_id }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

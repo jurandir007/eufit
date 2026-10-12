@@ -1,0 +1,103 @@
+{% extends "layouts/menu.html" %}
+
+{% block title %}Demonstração das Consultas SQL — ConnectHub{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('social.home') }}"
+           title="Voltar ao Feed"
+           class="text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-accentBlue/60 px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-sm">
+            ← Feed
+        </a>
+        <div>
+            <h1 class="text-3xl font-bold text-white">📊 Entregável 5: Consultas Analíticas (SQL)</h1>
+            <p class="text-sm text-slate-400 mt-0.5">Execução em tempo real no banco Neon Serverless (Database <code>Social</code>)</p>
+        </div>
+    </div>
+    
+    <div class="flex items-center gap-3">
+        <a href="{{ url_for('dashboard.home') }}"
+           class="text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl border border-slate-700 transition-all">
+            Ir para Menu EUFit
+        </a>
+    </div>
+</div>
+
+<!-- Intro Banner -->
+<div class="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-6 mb-8 text-sm text-slate-300 leading-relaxed">
+    <div class="flex items-center gap-2 mb-2 text-indigo-300 font-semibold text-base">
+        <span>🎓</span> Requisitos do Projeto de Consultoria em Banco de Dados
+    </div>
+    <p>
+        Para atender aos 35 pontos do <strong>Deliverable 4 (The Analysis: Answering Business Questions)</strong>, foram definidas 5 perguntas de negócio fundamentais que cobrem todas as competências exigidas pelo curso: 
+        <span class="text-white font-medium">JOIN</span>, 
+        <span class="text-white font-medium">Funções Agregadas</span>, 
+        <span class="text-white font-medium">GROUP BY</span>, 
+        <span class="text-white font-medium">GROUP BY com HAVING</span>, e 
+        <span class="text-white font-medium">Query de Escolha Livre</span> (além do bônus com <span class="text-white font-medium">CTE</span>).
+    </p>
+</div>
+
+<!-- Query Cards Loop -->
+<div class="space-y-8">
+    {% for item in results %}
+    <div class="bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-md hover:border-slate-700 transition-colors">
+        <!-- Card Title & Badge -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-800">
+            <div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 mr-2">
+                    {{ item.requirement }}
+                </span>
+                <h2 class="text-lg font-bold text-white inline">{{ item.title }}</h2>
+            </div>
+            <span class="text-xs text-slate-400 font-mono">Neon Live Query</span>
+        </div>
+
+        <!-- Business Question -->
+        <div class="mb-4">
+            <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Pergunta de Negócio:</h3>
+            <p class="text-sm text-slate-200 bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80 font-medium">
+                "{{ item.question }}"
+            </p>
+        </div>
+
+        <!-- SQL Code Block -->
+        <div class="mb-5">
+            <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Código SQL Executado:</h3>
+            <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 overflow-x-auto text-xs font-mono text-emerald-300">
+                <pre>{{ item.sql }}</pre>
+            </div>
+        </div>
+
+        <!-- Results Table -->
+        <div>
+            <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Resultado em Tempo Real (Neon):</h3>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-900/80 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+                        <tr>
+                            {% for col in item.columns %}
+                            <th class="px-4 py-3 font-semibold">{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 bg-slate-950/40">
+                        {% for row in item.rows %}
+                        <tr class="hover:bg-slate-900/40 transition-colors">
+                            {% for val in row %}
+                            <td class="px-4 py-3 whitespace-nowrap font-mono text-slate-200">{{ val }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
