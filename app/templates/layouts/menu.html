@@ -25,6 +25,43 @@
 </head>
 <body class="h-full bg-slate-950 font-sans text-slate-100 antialiased">
 
+    <!-- Toast notifications (sobrepostas no topo, compactas, sem fade inicial, com fade-out) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none px-4 w-auto max-w-sm">
+          {% for category, message in messages %}
+            <div class="toast-item pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold shadow-2xl border backdrop-blur-md transition-opacity duration-700 ease-out
+                        {% if category == 'error' %}
+                          bg-red-950/95 text-red-200 border-red-500/40 shadow-red-950/50
+                        {% elif category == 'info' %}
+                          bg-blue-950/95 text-blue-200 border-blue-500/40 shadow-blue-950/50
+                        {% else %}
+                          bg-emerald-950/95 text-emerald-200 border-emerald-500/40 shadow-emerald-950/50
+                        {% endif %}"
+                 style="opacity: 1;">
+              <span class="text-sm leading-none">{% if category == 'error' %}⚠️{% elif category == 'info' %}ℹ️{% else %}✓{% endif %}</span>
+              <span class="whitespace-nowrap">{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+
+        <script>
+          (function() {
+            setTimeout(function() {
+              var toasts = document.querySelectorAll('.toast-item');
+              toasts.forEach(function(toast) {
+                toast.style.opacity = '0';
+              });
+              setTimeout(function() {
+                var container = document.getElementById('toast-container');
+                if (container) container.remove();
+              }, 700);
+            }, 3000);
+          })();
+        </script>
+      {% endif %}
+    {% endwith %}
+
     <div class="w-full min-h-screen flex flex-col items-center justify-center p-8 relative">
 
         <!-- fundo pontilhado (mesmo padrão do auth_split.html) -->
