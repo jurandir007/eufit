@@ -1,6 +1,6 @@
 {% extends "layouts/menu.html" %}
 
-{% block title %}Scale — EUFit{% endblock %}
+{% block title %}Scale — History{% endblock %}
 
 {% block content %}
 <!-- Header -->
@@ -12,8 +12,8 @@
             ← Menu
         </a>
         <div>
-            <h1 class="text-3xl font-bold text-white">⚖️ Scale</h1>
-            <p class="text-sm text-slate-400 mt-0.5">Track your body composition</p>
+            <h1 class="text-3xl font-bold text-white">📋 Measurement History</h1>
+            <p class="text-sm text-slate-400 mt-0.5">All your scale records</p>
         </div>
     </div>
     <div class="flex items-center gap-3">
@@ -39,87 +39,84 @@
   {% endif %}
 {% endwith %}
 
-<!-- Latest reading card -->
-{% if latest %}
-<div class="bg-cardBg border border-slate-800 rounded-2xl p-8 mb-6 text-center">
-    <h2 class="text-sm uppercase tracking-wider text-slate-400 mb-4">📊 Last Measurement ({{ latest.carimbo.strftime('%Y-%m-%d %H:%M') }})</h2>
-    <div class="grid grid-cols-3 gap-4">
-        <div>
-            <div class="text-4xl font-bold text-accentBlue mb-1">{{ "%.1f"|format(latest.peso) }}</div>
-            <p class="text-sm text-slate-400">Weight (kg)</p>
-        </div>
-        <div>
-            <div class="text-4xl font-bold text-amber-400 mb-1">{{ "%.1f"|format(latest.gordura) }}<span class="text-2xl">%</span></div>
-            <p class="text-sm text-slate-400">Fat</p>
-        </div>
-        <div>
-            <div class="text-4xl font-bold text-emerald-400 mb-1">
-                {{ "%.1f"|format(latest.musculo) if latest.musculo else '—' }}{% if latest.musculo %}<span class="text-2xl">%</span>{% endif %}
-            </div>
-            <p class="text-sm text-slate-400">Muscle</p>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Form de inserção -->
-<div class="bg-cardBg border border-slate-800 rounded-2xl p-6 mb-6">
-    <h2 class="text-lg font-semibold text-white mb-4">📝 New Measurement</h2>
-    <form method="POST" action="{{ url_for('scale.log') }}" novalidate>
-        {{ form.hidden_tag() }}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {% for field, label in [(form.peso, 'Weight (kg) *'), (form.gordura, 'Fat (%) *'), (form.viceral, 'Visceral *')] %}
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2">{{ label }}</label>
-                {{ field(class="w-full bg-slate-900 border border-slate-700 focus:border-accentBlue rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition-colors", placeholder="0.0", step="0.1") }}
-            </div>
-            {% endfor %}
-        </div>
-        
-        <h3 class="text-xs uppercase tracking-wider text-slate-500 mb-3 mt-6">Optional fields</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            {% for field, label in [(form.musculo, 'Muscle (%)'), (form.basal, 'Basal (kcal)'), (form.idade, 'Met. Age')] %}
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2">{{ label }}</label>
-                {{ field(class="w-full bg-slate-900 border border-slate-700 focus:border-accentBlue rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition-colors opacity-80", placeholder="—", step="0.1") }}
-            </div>
-            {% endfor %}
-        </div>
-
-        {{ form.submit(class="w-full bg-accentBlue hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors cursor-pointer") }}
-    </form>
-</div>
-
-<!-- Últimos registos -->
-<div class="bg-cardBg border border-slate-800 rounded-2xl p-6 mb-6">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-white">📋 Recent Records</h2>
-        <a href="{{ url_for('scale.history') }}" class="text-sm text-accentBlue hover:text-blue-400 transition-colors">
-            View all →
-        </a>
-    </div>
-
+<!-- Tabela de histórico -->
+<div class="bg-cardBg border border-slate-800 rounded-2xl p-6 overflow-x-auto">
     {% if history %}
-    <div class="divide-y divide-slate-800">
-        {% for r in history %}
-        <div class="flex items-center justify-between py-3">
-            <span class="text-sm text-slate-400">{{ r.carimbo.strftime('%Y-%m-%d %H:%M') }}</span>
-            <div class="flex gap-4">
-                <span class="text-base font-semibold text-slate-100">{{ "%.1f"|format(r.peso) }} kg</span>
-                <span class="text-sm font-semibold text-amber-400">{{ "%.1f"|format(r.gordura) }}% fat</span>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+    <table class="w-full text-sm text-left">
+        <thead>
+            <tr class="text-xs uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                <th class="py-3 px-3">Date</th>
+                <th class="py-3 px-3 text-right">Weight</th>
+                <th class="py-3 px-3 text-right">Fat %</th>
+                <th class="py-3 px-3 text-right">Visceral</th>
+                <th class="py-3 px-3 text-right">Muscle</th>
+                <th class="py-3 px-3 text-right">Age</th>
+                <th class="py-3 px-3 text-right">Basal</th>
+                <th class="py-3 px-3 text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800">
+            {% for r in history %}
+            <tr class="hover:bg-slate-900/40 transition-colors">
+                <td class="py-3 px-3 text-slate-300 whitespace-nowrap">
+                    {{ r.carimbo.strftime('%Y-%m-%d %H:%M') }}
+                </td>
+                <td class="py-3 px-3 text-right font-semibold text-slate-100">
+                    {{ "%.1f"|format(r.peso) }} kg
+                </td>
+                <td class="py-3 px-3 text-right text-amber-400">
+                    {{ "%.1f"|format(r.gordura) }}%
+                </td>
+                <td class="py-3 px-3 text-right text-slate-300">
+                    {{ "%.1f"|format(r.viceral) if r.viceral is not none else '—' }}
+                </td>
+                <td class="py-3 px-3 text-right text-emerald-400">
+                    {{ "%.1f"|format(r.musculo) if r.musculo is not none else '—' }}
+                </td>
+                <td class="py-3 px-3 text-right text-slate-300">
+                    {{ "%.0f"|format(r.idade) if r.idade is not none else '—' }}
+                </td>
+                <td class="py-3 px-3 text-right text-slate-300">
+                    {{ "%.0f"|format(r.basal) if r.basal is not none else '—' }}
+                </td>
+                <td class="py-3 px-3">
+                    <div class="flex items-center justify-center gap-2">
+                        <a href="{{ url_for('scale.edit', record_id=r.id) }}"
+                           class="text-xs font-semibold text-accentBlue hover:text-blue-400
+                                  border border-accentBlue/40 hover:border-accentBlue
+                                  px-3 py-1.5 rounded-lg transition-colors">
+                            Edit
+                        </a>
+                        <form method="POST"
+                              action="{{ url_for('scale.delete', record_id=r.id) }}"
+                              onsubmit="return confirm('Delete this record? This cannot be undone.');"
+                              class="inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit"
+                                    class="text-xs font-semibold text-red-400 hover:text-red-300
+                                           border border-red-500/30 hover:border-red-500/60
+                                           px-3 py-1.5 rounded-lg transition-colors cursor-pointer">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {% else %}
-    <p class="text-slate-500 text-sm text-center py-6">No records yet.</p>
+    <p class="text-slate-500 text-sm text-center py-10">
+        No records yet.
+        <a href="{{ url_for('scale.home') }}" class="text-accentBlue hover:underline">Add your first measurement →</a>
+    </p>
     {% endif %}
 </div>
 
 <!-- Botão voltar -->
-<div class="text-center">
-    <a href="{{ url_for('dashboard.home') }}" class="inline-block text-sm text-slate-400 hover:text-slate-200 transition-colors">
-        ← Back to Menu
+<div class="text-center mt-6">
+    <a href="{{ url_for('scale.home') }}" class="inline-block text-sm text-slate-400 hover:text-slate-200 transition-colors">
+        ← Back to Scale
     </a>
 </div>
 {% endblock %}

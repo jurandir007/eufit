@@ -31,6 +31,12 @@
     <form method="POST" class="flex flex-col gap-6" novalidate>
         {{ form.hidden_tag() }}
 
+        {% if form.errors %}
+        <div class="text-red-400 text-xs bg-red-500/10 border border-red-500/20 p-3 rounded-lg mb-4">
+            Por favor, verifique os campos informados.
+        </div>
+        {% endif %}
+
         <div>
             <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2">Date & time</label>
             {{ form.carimbo(class="w-full bg-slate-900 border border-slate-700 focus:border-accentBlue rounded-lg px-4 py-3 text-slate-100 outline-none transition-colors") }}
