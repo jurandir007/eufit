@@ -67,13 +67,50 @@
         <!-- fundo pontilhado (mesmo padrão do auth_split.html) -->
         <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
 
-        {% if not current_user.is_authenticated %}
+        {% if current_user.is_authenticated and current_user.is_guest %}
+        <!-- Barra de navegação e seletor do Modo Visitante -->
+        <div class="w-full max-w-5xl mb-6 flex flex-wrap items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 rounded-2xl px-4 py-2.5 backdrop-blur-md relative z-20 shadow-xl">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-amber-400 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    Modo Visitante:
+                </span>
+                <span class="text-xs text-slate-400 hidden sm:inline">Alternar volume:</span>
+            </div>
+
+            <!-- Seletor de Perfis Demo -->
+            <div class="flex items-center gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs">
+                <a href="{{ url_for('auth.guest_login', tier='iniciante') }}"
+                   title="Simula usuário com até 50 dados"
+                   class="px-2.5 py-1 rounded-lg transition-all {% if current_user.guest_tier == 'iniciante' %}bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/40 shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                    🟢 Iniciante (<50)
+                </a>
+                <a href="{{ url_for('auth.guest_login', tier='pleno') }}"
+                   title="Simula usuário com 50 a 300 dados"
+                   class="px-2.5 py-1 rounded-lg transition-all {% if current_user.guest_tier == 'pleno' %}bg-blue-500/20 text-blue-300 font-semibold border border-blue-500/40 shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                    🔵 Pleno (50-300)
+                </a>
+                <a href="{{ url_for('auth.guest_login', tier='fiel') }}"
+                   title="Simula usuário com mais de 300 dados"
+                   class="px-2.5 py-1 rounded-lg transition-all {% if current_user.guest_tier == 'fiel' %}bg-purple-500/20 text-purple-300 font-semibold border border-purple-500/40 shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                    🟣 Fiel (>300)
+                </a>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a href="{{ url_for('auth.google_login') }}"
+                   class="text-xs font-medium text-white bg-accentBlue hover:bg-blue-600 px-3 py-1.5 rounded-xl transition-all shadow-sm">
+                    Entrar com Google →
+                </a>
+            </div>
+        </div>
+        {% elif not current_user.is_authenticated %}
         <div class="absolute top-4 right-4 z-20">
             <a href="{{ url_for('auth.login') }}"
                class="text-[11px] uppercase tracking-wider text-slate-400 hover:text-accentBlue
                       bg-slate-900/60 border border-slate-800 hover:border-accentBlue/50
                       px-3 py-1.5 rounded-full transition-colors">
-                Guest · Sign in
+                Sign in
             </a>
         </div>
         {% endif %}

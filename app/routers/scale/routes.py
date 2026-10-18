@@ -25,6 +25,10 @@ def home():
 @scale_bp.route("/log", methods=["POST"])
 @login_required
 def log():
+    if current_user.is_guest:
+        flash("Modo Demonstração: faça login com Google para cadastrar suas próprias medições.", "info")
+        return redirect(url_for("scale.home"))
+
     form = LogForm()
     if form.validate_on_submit():
         try:
@@ -66,6 +70,10 @@ def edit(record_id):
         form.carimbo.data = record.carimbo
 
     if form.validate_on_submit():
+        if current_user.is_guest:
+            flash("Modo Demonstração: faça login com Google para editar medições.", "info")
+            return redirect(url_for("scale.history"))
+
         services.update_record(
             record_id, current_user.id,
             carimbo=form.carimbo.data,
@@ -85,6 +93,10 @@ def edit(record_id):
 @scale_bp.route("/delete/<int:record_id>", methods=["POST"])
 @login_required
 def delete(record_id):
+    if current_user.is_guest:
+        flash("Modo Demonstração: faça login com Google para excluir medições.", "info")
+        return redirect(url_for("scale.history"))
+
     ok = services.delete_record(record_id, current_user.id)
     flash("Record deleted." if ok else "Record not found.", "success" if ok else "error")
     return redirect(url_for("scale.history"))

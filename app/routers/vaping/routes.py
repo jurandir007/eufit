@@ -25,6 +25,10 @@ def home():
 @vaping_bp.route("/log", methods=["POST"])
 @login_required
 def log():
+    if current_user.is_guest:
+        flash("Modo Demonstração: faça login com Google para cadastrar seu consumo.", "info")
+        return redirect(url_for("vaping.home"))
+
     form = LogForm()
     if form.validate_on_submit():
         services.create_vape_record(current_user.id, form.puff_count.data)
@@ -51,6 +55,10 @@ def edit(record_id):
 
     form = EditForm(obj=record)
     if form.validate_on_submit():
+        if current_user.is_guest:
+            flash("Modo Demonstração: faça login com Google para editar registros.", "info")
+            return redirect(url_for("vaping.history"))
+
         services.update_vape_record(
             record_id,
             current_user.id,
@@ -65,6 +73,10 @@ def edit(record_id):
 @vaping_bp.route("/delete/<int:record_id>", methods=["POST"])
 @login_required
 def delete(record_id):
+    if current_user.is_guest:
+        flash("Modo Demonstração: faça login com Google para excluir registros.", "info")
+        return redirect(url_for("vaping.history"))
+
     ok = services.delete_vape_record(record_id, current_user.id)
     if ok:
         flash("Record deleted.", "success")
