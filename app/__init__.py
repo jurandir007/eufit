@@ -33,6 +33,7 @@ def create_app(config_class=Config):
     from app.routers.vaping import vaping_bp
     from app.routers.scale import scale_bp
     from app.routers.social import social_bp
+    from app.routers.url_shortener import shortener_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
@@ -40,6 +41,7 @@ def create_app(config_class=Config):
     app.register_blueprint(vaping_bp)
     app.register_blueprint(scale_bp)
     app.register_blueprint(social_bp)
+    app.register_blueprint(shortener_bp)
 
     # Handlers de erro
     from app.core import errors
